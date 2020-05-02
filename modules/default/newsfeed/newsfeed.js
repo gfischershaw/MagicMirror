@@ -366,6 +366,11 @@ Module.register("newsfeed",{
 		}
 	},
 
+	disableArticleTimer() {
+		clearInterval(timer);
+		timer = null;
+	},
+
 	notificationReceived: function(notification, payload, sender) {
 		if(notification === "ARTICLE_NEXT"){
 			var before = this.activeItem;
@@ -373,6 +378,7 @@ Module.register("newsfeed",{
 			if (this.activeItem >= this.newsItems.length) {
 				this.activeItem = 0;
 			}
+			this.disableArticleTimer();
 			this.resetDescrOrFullArticleAndTimer();
 			Log.info(this.name + " - going from article #" + before + " to #" + this.activeItem + " (of " + this.newsItems.length + ")");
 			this.updateDom(100);
@@ -382,6 +388,7 @@ Module.register("newsfeed",{
 			if (this.activeItem < 0) {
 				this.activeItem = this.newsItems.length - 1;
 			}
+			this.disableArticleTimer();
 			this.resetDescrOrFullArticleAndTimer();
 			Log.info(this.name + " - going from article #" + before + " to #" + this.activeItem + " (of " + this.newsItems.length + ")");
 			this.updateDom(100);
@@ -435,8 +442,7 @@ Module.register("newsfeed",{
 			document.getElementsByClassName("region bottom bar")[0].style.bottom = "inherit";
 			document.getElementsByClassName("region bottom bar")[0].style.top = "-90px";
 		}
-		clearInterval(timer);
-		timer = null;
+		this.disableArticleTimer();
 		Log.info(this.name + " - showing " + this.isShowingDescription ? "article description" : "full article");
 		this.updateDom(100);
 	}
